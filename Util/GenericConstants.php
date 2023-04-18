@@ -7,7 +7,7 @@ abstract class GenericConstants
     /* REQUESTS */
     public const ROUTES = ['product'];
     public const RESOURCES = ['add', 'list','delete'];      
-    public const METHODS = ['GET', 'POST', 'UPDATE'];
+    public const METHODS = ['GET', 'POST', 'PATCH'];
 
     /* ERRORS */
     public const ERROR_MSG_ROUTE = 'Route not allowed!';

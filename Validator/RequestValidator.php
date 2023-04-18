@@ -75,7 +75,6 @@ class RequestValidator
             $productService = new ProductService($method);
             $productService->handleMethods($method ,$productService->getBody());
             $return = $productService->getBody();
-            // var_dump($return);exit;
             return $return;
             
         }        
@@ -98,9 +97,7 @@ class RequestValidator
 
         $productService = new ProductService($method);
         $productService->setBody($body);
-        $productService->handleMethods($method, $body);
-
-
-        return $return;
+        $return = $productService->handleMethods($method, $body);
+        return $return;        
     }     
 }

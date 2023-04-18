@@ -5,7 +5,7 @@ namespace Service;
 use Validator\RequestValidator;
 use Model\Product;
 use Model\Book;
-use Model\Dvd;
+use Model\DVD;
 use Model\Furniture;
 
 class ProductService
@@ -46,12 +46,34 @@ class ProductService
         return $this->$method($body);
     }
 
-    private function post($body) {
+    public function post($body) {
+        
+        $classSave = strtolower($body['product_type'] . 'Add');
+        return $this->$classSave($body);
+    }
 
-        $className = ucfirst($body['product_type']);
-        // var_dump($className);exit;
-        $class = new $className($body);
-        $class->add();
+    public function bookAdd($body) {
+
+        $book = new Book($body);                
+        $book->add($book);
+        $return = 'Product saved';        
+        return $return;
+    }
+
+    private function dvdAdd($body) {
+
+        $dvd = new DVD($body);
+        $dvd->add($dvd);
+        $return = 'Product saved';        
+        return $return;
+    }
+
+    private function furnitureAdd($body) {
+
+        $furniture = new Furniture($body);
+        $furniture->add($furniture);
+        $return = 'Product saved';        
+        return $return;
     }
 
     private function get() {
@@ -61,8 +83,10 @@ class ProductService
         return $return;
     }
 
-    private function update($body) {
+    private function patch($body) {
 
-        return Product::delete($body);
+        Product::delete($body);
+        $return = 'Product deleted';        
+        return $return;
     }    
 }

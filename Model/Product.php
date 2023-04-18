@@ -13,73 +13,10 @@ abstract class Product
     protected $name;
     protected $price;
     protected $product_type;
-    protected $active = true;
+    protected $active = true;    
     
-
-    protected function __construct($sku, $name, $price, $product_type) {
-
-        $this->setSku($sku);
-        $this->setName($name);
-        $this->setPrice($price);
-        $this->setProductType($product_type);
-    }
-
-    public function getProduct_id() {
-        return $this->product_id;
-    }
-
-    public function getSku() {
-        return $this->sku;
-    }
     
-    public function setSku($sku) {
-        $this->sku = $sku;
-    }
-    
-    public function getName() {
-        return $this->name;
-    }
-    
-    public function setName($name) {
-        $this->name = $name;
-    }    
-    
-    public function getPrice() {
-        return $this->price;
-    }
-    
-    public function setPrice($price) {
-        $this->price = $price;
-    }    
-    
-    public function getProductType() {
-        return $this->product_type;
-    }
-    
-    public function setProductType($product_type) {
-        $this->product_type = $product_type;
-    }
-    
-    public function add() {
-
-        try {
-            $dao = new DAO;
-            $conn = $dao->connect();
-            $sql = "INSERT INTO products (sku, name, price, product_type)
-                    VALUES (:sku, :name, :price, :product_type)";
-            
-            $stman = $conn->prepare($sql);
-            $stman->bindParam(":sku", $this->sku);
-            $stman->bindParam(":name", $this->name);
-            $stman->bindParam(":price", $this->price);
-            $stman->bindParam(":product_type", $this->product_type);
-            $stman->execute();
-
-        } catch (Exception $e)
-        {
-            throw new Exception("error registering the product" . $e->getMessage());
-        }
-    }
+    public function add($product) {}
 
     public static function getAll() {
 
@@ -88,18 +25,15 @@ abstract class Product
             $dao = new DAO;
             $conn = $dao->connect();
             $sql = "SELECT 
-                        p.product_id, 
-                        p.sku, 
-                        p.name, 
-                        p.price, 
-                        p.product_type,
-                        d.size AS Size,
-                        b.weight AS Weight,
-                        CONCAT(f.height, ' x ', f.width, ' x ', f.length) END AS Dimension
-                        FROM product p
-                    LEFT JOIN dvd d ON p.product_id = d.product_id
-                    LEFT JOIN book b ON p.product_id = b.product_id
-                    LEFT JOIN furniture f ON p.product_id = f.product_id
+                        product_id, 
+                        sku, 
+                        name, 
+                        price, 
+                        product_type,
+                        size,
+                        weight,
+                        CONCAT(height, 'x', width, 'x', length) AS Dimension                        
+                    FROM product p
                     WHERE p.active = true;";                         
 
             $stman = $conn->prepare($sql);
@@ -123,24 +57,22 @@ abstract class Product
 
         try {
             $dao = new DAO;
-            $conn = $dao->connect(); 
-            
-            $sql = "UPDATE product set active = false where product_id IN (";
-            $productIds = [];
-            
-            foreach ($body as $ids) {
-                $productIds[] = $ids->getProduct_id();
-                $sql .= "?,";
-            }
-            
-            $sql = rtrim($sql, ",");
-            $sql .= ")";
-            
+            $conn = $dao->connect();
+            $ids = implode(',', array_fill(0, count($body['product_id']), '?'));
+            $sql = "UPDATE product SET active = false WHERE product_id IN ($ids)";
             $stman = $conn->prepare($sql);
-            $stman->execute($productIds);
+            $stman->execute($body['product_id']);
+
+            return $stman->rowCount();
+
+        } catch (PDOException $pdoe) {
+            throw new Exception("Error executing command on database!" . $pdoe->getMessage());
+
+        } catch (JsonException $jsone) {
+            throw new Exception("Error while decoding JSON" . $jsone->getMessage());
 
         } catch (Exception $e) {
             throw new Exception("Error deleting products" . $e->getMessage());
         }
-    }    
+    }
 }

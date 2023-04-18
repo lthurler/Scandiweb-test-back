@@ -11,15 +11,53 @@ class Furniture extends Product
 {
     private $height;
     private $width;
-    private $length;
-    protected $product_id;
+    private $length;    
     
-    public function __construct($sku ,$name, $price, $product_type, $height ,$width ,$length) {
+    public function __construct($body) {
 
-        parent::__construct($sku ,$name, $price, $product_type);
-        $this->setHeight($height);
-        $this->setWidth($width);
-        $this->setLength($length);    
+        $this->setSku($body['sku']);
+        $this->setName($body['name']);
+        $this->setPrice($body['price']);
+        $this->setProductType($body['product_type']);
+        $this->setHeight($body['height']); 
+        $this->setWidth($body['width']);
+        $this->setLength($body['length']);    
+    }
+
+    public function setWeight($weight) {
+        $this->weight = $weight;
+    }    
+    
+    public function getSku() {
+        return $this->sku;
+    }
+    
+    public function setSku($sku) {
+        $this->sku = $sku;
+    }
+    
+    public function getName() {
+        return $this->name;
+    }
+    
+    public function setName($name) {
+        $this->name = $name;
+    }    
+    
+    public function getPrice() {
+        return $this->price;
+    }
+    
+    public function setPrice($price) {
+        $this->price = $price;
+    }    
+    
+    public function getProductType() {
+        return $this->product_type;
+    }
+    
+    public function setProductType($product_type) {
+        $this->product_type = $product_type;
     }
 
     public function getHeight() {
@@ -44,39 +82,27 @@ class Furniture extends Product
     
     public function setLength($length) {
         $this->length = $length;
-    }
-
-    public function getProduct_id()
-    {
-        return $this->product_id;
-    }
-    
-    public function setProduct_id($product_id)
-    {
-        $this->product_id = $product_id;
-        return $this;
-    }
+    }    
        
-    public function add() {
-
-        parent::add();
+    public function add() {        
 
         try {
             $dao = new DAO;
             $conn = $dao->connect();
-            $this->setProduct_id($dao->lastInsertId());
-            $sql = "INSERT INTO furniture (product_id, height, width, length)
-                    VALUES (:product_id, :height, :width, :length)";
+            $sql = "INSERT INTO product (height, width, length)
+                    VALUES (:height, :width, :length)";
             
             $stman = $conn->prepare($sql);
-            $stman->bindParam(':product_id', $this->getProduct_id());
-            $stman->bindParam(':height', $this->getHeight());
-            $stman->bindParam(':width', $this->getWidth());
-            $stman->bindParam(':length', $this->getLength());
+            $stman->bindValue(":sku", $furniture->getSku());
+            $stman->bindValue(":name", $furniture->getName());
+            $stman->bindValue(":price", $furniture->getPrice());
+            $stman->bindValue(":product_type", $furniture->getProductType());
+            $stman->bindValue(':height', $furniture->getHeight());
+            $stman->bindValue(':width', $furniture->getWidth());
+            $stman->bindValue(':length', $furniture->getLength());
             $stman->execute();
 
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
             throw new Exception("error registering the product" . $e->getmessage());
         }
     }    

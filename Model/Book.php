@@ -10,13 +10,15 @@ use Model\Product;
 class Book extends Product
 {
     private $weight;
-    protected $product_id;
-       
+         
 
-    public function __construct($sku ,$name, $price, $product_type, $weight) {
+    public function __construct($body) {
 
-        parent::__construct($sku ,$name, $price, $product_type);
-        $this->setWeight($weight);   
+        $this->setSku($body['sku']);
+        $this->setName($body['name']);
+        $this->setPrice($body['price']);
+        $this->setProductType($body['product_type']);
+        $this->setWeight($body['weight']);   
     }
 
     public function getWeight() {
@@ -25,37 +27,57 @@ class Book extends Product
     
     public function setWeight($weight) {
         $this->weight = $weight;
+    }    
+    
+    public function getSku() {
+        return $this->sku;
     }
     
-    public function getProduct_id()
-    {
-        return $this->product_id;
+    public function setSku($sku) {
+        $this->sku = $sku;
     }
     
-    public function setProduct_id($product_id)
-    {
-        $this->product_id = $product_id;
-        return $this;
+    public function getName() {
+        return $this->name;
     }
     
-    public function add() {
-
-        parent::add();
+    public function setName($name) {
+        $this->name = $name;
+    }    
+    
+    public function getPrice() {
+        return $this->price;
+    }
+    
+    public function setPrice($price) {
+        $this->price = $price;
+    }    
+    
+    public function getProductType() {
+        return $this->product_type;
+    }
+    
+    public function setProductType($product_type) {
+        $this->product_type = $product_type;
+    }
+    
+    public function add($book) {       
         
         try{
             $dao = new DAO;
-            $conn = $dao->connect();
-            $this->setProduct_id($dao->lastInsertId());
-            $sql = "INSERT INTO book (product_id, weight)
-            VALUES (:product_id, :weight)";
+            $conn = $dao->connect();            
+            $sql = "INSERT INTO product (sku, name, price, product_type, weight)
+                    VALUES (:sku, :name, :price, :product_type, :weight)";            
             
             $stman = $conn->prepare($sql);
-            $stman->bindParam(':product_id',$this->getProduct_id());
-            $stman->bindParam(':weight', $this->getWeight());
-            $stman->execute();
+            $stman->bindValue(":sku", $book->getSku());
+            $stman->bindValue(":name", $book->getName());
+            $stman->bindValue(":price", $book->getPrice());
+            $stman->bindValue(":product_type", $book->getProductType());           
+            $stman->bindValue(':weight', $book->getWeight());
+            $stman->execute();           
             
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
             throw new Exception ("error registering the product" . $e->getmessage());
         }
     }
