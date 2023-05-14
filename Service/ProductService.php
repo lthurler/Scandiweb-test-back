@@ -56,7 +56,7 @@ class ProductService
 
         $book = new Book($body);                
         $book->add($book);
-        $return = 'Product saved';        
+        $return = ['Product saved'];        
         return $return;
     }
 
@@ -64,7 +64,7 @@ class ProductService
 
         $dvd = new DVD($body);
         $dvd->add($dvd);
-        $return = 'Product saved';        
+        $return = ['Product saved'];        
         return $return;
     }
 
@@ -72,7 +72,7 @@ class ProductService
 
         $furniture = new Furniture($body);
         $furniture->add($furniture);
-        $return = 'Product saved';        
+        $return = ['Product saved'];        
         return $return;
     }
 
@@ -86,7 +86,7 @@ class ProductService
     private function patch($body) {
 
         Product::delete($body);
-        $return = 'Product deleted';        
+        $return = ['Product deleted'];        
         return $return;
     }    
 }
