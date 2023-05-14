@@ -3,7 +3,7 @@
 namespace Util;
 
 
-class Routes
+abstract class Routes
 {
 
     public static function getRoutes() {

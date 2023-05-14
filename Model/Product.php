@@ -3,9 +3,13 @@
 namespace Model;
 
 use Service\DAO;
+use PDOException;
+use Exception;
+use JsonException;
 
 
-abstract class Product 
+
+abstract class Product
 {
 
     protected $product_id;
@@ -13,28 +17,31 @@ abstract class Product
     protected $name;
     protected $price;
     protected $product_type;
-    protected $active = true;    
-    
-    
-    public function add($product) {}
+    protected $active = true;
 
-    public static function getAll() {
+
+    public function add($product)
+    {
+    }
+
+    public static function getAll()
+    {
 
         try {
 
             $dao = new DAO;
             $conn = $dao->connect();
             $sql = "SELECT 
-                        product_id, 
+                        product_id,
                         sku, 
                         name, 
                         price, 
                         product_type,
-                        size,
-                        weight,
-                        CONCAT(height, 'x', width, 'x', length) AS Dimension                        
+                        size AS Size,
+                        weight AS Weight,
+                        CONCAT(height, 'x', width, 'x', length) AS Dimension                       
                     FROM product p
-                    WHERE p.active = true;";                         
+                    WHERE p.active = true;";
 
             $stman = $conn->prepare($sql);
             $stman->execute();
@@ -53,7 +60,8 @@ abstract class Product
         }
     }
 
-    public static function delete($body) {
+    public static function delete($body)
+    {
 
         try {
             $dao = new DAO;

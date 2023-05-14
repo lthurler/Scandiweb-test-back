@@ -5,80 +5,93 @@ namespace Model;
 
 use Service\DAO;
 use Model\Product;
+use Exception;
 
 
 class Book extends Product
 {
     private $weight;
-         
 
-    public function __construct($body) {
+
+    public function __construct($body)
+    {
 
         $this->setSku($body['sku']);
         $this->setName($body['name']);
         $this->setPrice($body['price']);
         $this->setProductType($body['product_type']);
-        $this->setWeight($body['weight']);   
+        $this->setWeight($body['weight']);
     }
 
-    public function getWeight() {
+    public function getWeight()
+    {
         return $this->weight;
     }
-    
-    public function setWeight($weight) {
+
+    public function setWeight($weight)
+    {
         $this->weight = $weight;
-    }    
-    
-    public function getSku() {
+    }
+
+    public function getSku()
+    {
         return $this->sku;
     }
-    
-    public function setSku($sku) {
+
+    public function setSku($sku)
+    {
         $this->sku = $sku;
     }
-    
-    public function getName() {
+
+    public function getName()
+    {
         return $this->name;
     }
-    
-    public function setName($name) {
+
+    public function setName($name)
+    {
         $this->name = $name;
-    }    
-    
-    public function getPrice() {
+    }
+
+    public function getPrice()
+    {
         return $this->price;
     }
-    
-    public function setPrice($price) {
+
+    public function setPrice($price)
+    {
         $this->price = $price;
-    }    
-    
-    public function getProductType() {
+    }
+
+    public function getProductType()
+    {
         return $this->product_type;
     }
-    
-    public function setProductType($product_type) {
+
+    public function setProductType($product_type)
+    {
         $this->product_type = $product_type;
     }
-    
-    public function add($book) {       
-        
-        try{
+
+    public function add($book)
+    {
+
+        try {
             $dao = new DAO;
-            $conn = $dao->connect();            
+            $conn = $dao->connect();
             $sql = "INSERT INTO product (sku, name, price, product_type, weight)
-                    VALUES (:sku, :name, :price, :product_type, :weight)";            
-            
+                    VALUES (:sku, :name, :price, :product_type, :weight)";
+
             $stman = $conn->prepare($sql);
             $stman->bindValue(":sku", $book->getSku());
             $stman->bindValue(":name", $book->getName());
             $stman->bindValue(":price", $book->getPrice());
-            $stman->bindValue(":product_type", $book->getProductType());           
-            $stman->bindValue(':weight', $book->getWeight());
-            $stman->execute();           
-            
+            $stman->bindValue(":product_type", $book->getProductType());
+            $stman->bindValue(':size', $book->getWeight());
+            $stman->execute();
+
         } catch (Exception $e) {
-            throw new Exception ("error registering the product" . $e->getmessage());
+            throw new Exception("error registering the product" . $e->getmessage());
         }
     }
 }

@@ -15,13 +15,11 @@ define('DS', DIRECTORY_SEPARATOR);
 define('DIR_APP', __DIR__);
 define('DIR_PROJECT', 'scandiweb_test');
 
-define("TOKEN", "f5431a49-60c3-4eef-997a-39b1c71e31bd");
+// define("TOKEN", "f5431a49-60c3-4eef-997a-39b1c71e31bd");
 
-if (file_exists( filename: 'autoload.php'))
-{
+if (file_exists( filename: 'autoload.php')) {
     include 'autoload.php';
 
-}else 
-{
+} else {
     echo 'Error adding bootstrap';exit;
 }

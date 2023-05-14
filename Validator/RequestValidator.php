@@ -13,7 +13,7 @@ class RequestValidator
 {
 
     private array $request;
-    private array $dataRequest;    
+    private array $dataRequest;
 
 
     public function getDataRequest()
@@ -26,7 +26,7 @@ class RequestValidator
         $this->dataRequest = $dataRequest;
         return $this;
     }
-    
+
     public function getRequest()
     {
         return $this->request;
@@ -38,31 +38,34 @@ class RequestValidator
         return $this;
     }
 
-    public function __construct($request) {
+    public function __construct($request)
+    {
 
         $this->setRequest($request);
         $this->dataRequest = array();
     }
-    
-    public function handleRequest() {
 
-        if (in_array($this->request['route'], GenericConstants::ROUTES, true) &&
+    public function handleRequest()
+    {
+
+        if (
+            in_array($this->request['route'], GenericConstants::ROUTES, true) &&
             in_array($this->request['resource'], GenericConstants::RESOURCES, true) &&
-            in_array($this->request['method'], GenericConstants::METHODS, true)) {
+            in_array($this->request['method'], GenericConstants::METHODS, true)
+        ) {
 
             return $this->bodyRequest();
-                
+
         } else {
 
             throw new InvalidArgumentException(GenericConstants::ERROR_MSG_ROUTE);
-        }        
-
-        return $return;
+        }
     }
 
-    private function bodyRequest() {
+    private function bodyRequest()
+    {
 
-        if ($this->request['method']  !== 'GET') {
+        if ($this->request['method'] !== 'GET') {
 
             $this->setDataRequest(Json::handleJsonRequestBody());
             $return = $this->bodyValidade($this->getDataRequest());
@@ -73,22 +76,23 @@ class RequestValidator
 
             $method = 'get';
             $productService = new ProductService($method);
-            $productService->handleMethods($method ,$productService->getBody());
+            $productService->handleMethods($method, $productService->getBody());
             $return = $productService->getBody();
             return $return;
-            
-        }        
+
+        }
     }
 
-    private function bodyValidade($dataRequest) {
+    private function bodyValidade($dataRequest)
+    {
 
         $fields = ['product_id', 'sku', 'name', 'price', 'product_type', 'height', 'width', 'length', 'size', 'weight'];
         $compare = array_diff_key($dataRequest, array_flip($fields));
-        
+
         if (empty($compare)) {
 
             $method = strtolower($this->request['method']);
-            $body = $this->dataRequest;           
+            $body = $this->dataRequest;
 
         } else {
 
@@ -98,6 +102,6 @@ class RequestValidator
         $productService = new ProductService($method);
         $productService->setBody($body);
         $return = $productService->handleMethods($method, $body);
-        return $return;        
-    }     
+        return $return;
+    }
 }

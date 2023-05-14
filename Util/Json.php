@@ -10,13 +10,13 @@ use JsonException;
 class Json
 {
 
-    public function processArrayToReturn($return) {
+    public function processArrayToReturn($return)
+    {
 
-        // var_dump($return);exit;
         $data = [];
         $data[GenericConstants::TYPE] = GenericConstants::TYPE_ERROR;
 
-        if((is_array($return) && count($return) > 0)) {            
+        if ((is_array($return) && count($return) > 0)) {
             $data[GenericConstants::TYPE] = GenericConstants::TYPE_SUCESS;
             $data[GenericConstants::RESPONSE] = $return;
         }
@@ -24,17 +24,19 @@ class Json
         $this->jsonReturn($data);
     }
 
-    private function jsonReturn($json) {
+    private function jsonReturn($json)
+    {
 
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=UTF-8');
         header('Cache-control: no-cache, no-store, must-revalidate');
-        header('Access-Control-Allow-Methods: GET,POST,PUT,DELETE');
+        header('Access-Control-Allow-Methods: GET,PATCH,DELETE,POST,PUT');
 
         echo json_encode($json, JSON_THROW_ON_ERROR, 1024);
         exit;
     }
 
-    public static function handleJsonRequestBody() {
+    public static function handleJsonRequestBody()
+    {
 
         try {
             $postJson = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
