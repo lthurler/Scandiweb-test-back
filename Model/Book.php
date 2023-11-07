@@ -3,9 +3,9 @@
 namespace Model;
 
 
+use Exception;
 use Service\DAO;
 use Model\Product;
-use Exception;
 
 
 class Book extends Product
@@ -15,11 +15,7 @@ class Book extends Product
 
     public function __construct($body)
     {
-
-        $this->setSku($body['sku']);
-        $this->setName($body['name']);
-        $this->setPrice($body['price']);
-        $this->setProductType($body['product_type']);
+        parent::__construct($body);
         $this->setWeight($body['weight']);
     }
 
@@ -31,51 +27,10 @@ class Book extends Product
     public function setWeight($weight)
     {
         $this->weight = $weight;
-    }
+    }    
 
-    public function getSku()
+    public function post($product)
     {
-        return $this->sku;
-    }
-
-    public function setSku($sku)
-    {
-        $this->sku = $sku;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    public function setPrice($price)
-    {
-        $this->price = $price;
-    }
-
-    public function getProductType()
-    {
-        return $this->product_type;
-    }
-
-    public function setProductType($product_type)
-    {
-        $this->product_type = $product_type;
-    }
-
-    public function add($book)
-    {
-
         try {
             $dao = new DAO;
             $conn = $dao->connect();
@@ -83,15 +38,15 @@ class Book extends Product
                     VALUES (:sku, :name, :price, :product_type, :weight)";
 
             $stman = $conn->prepare($sql);
-            $stman->bindValue(":sku", $book->getSku());
-            $stman->bindValue(":name", $book->getName());
-            $stman->bindValue(":price", $book->getPrice());
-            $stman->bindValue(":product_type", $book->getProductType());
-            $stman->bindValue(':size', $book->getWeight());
+            $stman->bindValue(":sku", $product->getSku());
+            $stman->bindValue(":name", $product->getName());
+            $stman->bindValue(":price", $product->getPrice());
+            $stman->bindValue(":product_type", $product->getProductType());
+            $stman->bindValue(':weight', $product->getWeight());
             $stman->execute();
 
         } catch (Exception $e) {
-            throw new Exception("error registering the product" . $e->getmessage());
+            throw new Exception("error registering the product: " . $e->getmessage());
         }
     }
 }

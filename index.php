@@ -2,31 +2,34 @@
 
 use Util\Json;
 use Util\Routes;
-use Validator\RequestValidator;
-use Util\GenericConstants;
+use Service\ProductService;
 
-require_once 'bootstrap.php';
+require_once 'config.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Headers: *');
-header("Access-Control-Max-Age: 3600");
-header('Access-Control-Allow-Methods: GET,PATCH,DELETE,POST,PUT, OPTIONS');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {    
+    header("Access-Control-Allow-Methods: GET,PATCH,POST,OPTIONS");        
+    header("Access-Control-Max-Age: 3600");
+    header("Access-Control-Allow-Headers: Content-Type");  
+    
+    exit;
+}
 
 try {
+    
+    $productService = new ProductService(Routes::getRoutes());
+    $response = $productService->handleRequest();
 
-    $requestValidator = new RequestValidator(Routes::getRoutes());
-    $return = $requestValidator->handleRequest();
-
-    $json = new Json();
-    $json->processArrayToReturn($return);
+    Json::processArrayToReturn($response);
 
 } catch (Exception $exception) {
 
     echo json_encode([
-        GenericConstants::TYPE => GenericConstants::TYPE_ERROR,
-        GenericConstants::RESPONSE => $exception->getMessage()
+        'Type' => 'ERROR',
+        'Response' => $exception->getMessage()
     ], JSON_THROW_ON_ERROR, 512);
+    
     exit;
 }

@@ -3,46 +3,43 @@
 namespace Util;
 
 use InvalidArgumentException;
-use Util\GenericConstants;
 use JsonException;
 
 
 class Json
 {
-
-    public function processArrayToReturn($return)
+    public static function processArrayToReturn($response)
     {
-
         $data = [];
-        $data[GenericConstants::TYPE] = GenericConstants::TYPE_ERROR;
+        $data['type'] = 'error';
 
-        if ((is_array($return) && count($return) > 0)) {
-            $data[GenericConstants::TYPE] = GenericConstants::TYPE_SUCESS;
-            $data[GenericConstants::RESPONSE] = $return;
+        if ((is_array($response) && count($response) > 0)) {
+            $data['type'] = 'sucess';
+            $data['response'] = $response;
         }
 
-        $this->jsonReturn($data);
+        self::jsonReturn($data);
     }
 
-    private function jsonReturn($json)
+    private static function jsonReturn($data)
     {
-
         header('Content-Type: application/json; charset=UTF-8');
         header('Cache-control: no-cache, no-store, must-revalidate');
         header('Access-Control-Allow-Methods: GET,PATCH,DELETE,POST,PUT');
 
-        echo json_encode($json, JSON_THROW_ON_ERROR, 1024);
+        echo json_encode($data, JSON_THROW_ON_ERROR, 1024);
         exit;
     }
 
     public static function handleJsonRequestBody()
     {
-
         try {
             $postJson = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
+
         } catch (JsonException $e) {
-            throw new InvalidArgumentException(GenericConstants::ERR0R_MSG_EMPTY_JSON);
+            throw new InvalidArgumentException('Request Body cannot be empty!');
         }
+
         if (is_array($postJson) && count($postJson) > 0) {
             return $postJson;
         }
