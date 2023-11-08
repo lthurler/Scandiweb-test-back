@@ -12,7 +12,7 @@ abstract class Routes
 
         $request = [];
         $request['route'] = $url[0];
-        $request['resource'] = $url[1] ?? null;
+        $request['resource'] = $url[1] ?? null;        
         $request['method'] = $_SERVER['REQUEST_METHOD'];
 
         return $request;

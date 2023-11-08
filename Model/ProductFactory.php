@@ -19,6 +19,6 @@ class ProductFactory
     {
         $className = self::$productTypes[$body['product_type']];
         $product = new $className($body);
-        $product->post($product);
+        return $product->post($product);
     }
 }

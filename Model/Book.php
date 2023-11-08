@@ -44,9 +44,13 @@ class Book extends Product
             $stman->bindValue(":product_type", $product->getProductType());
             $stman->bindValue(':weight', $product->getWeight());
             $stman->execute();
+            $response = ['Product added on database'];
+
+            return $response;
 
         } catch (Exception $e) {
-            throw new Exception("error registering the product: " . $e->getmessage());
+
+            throw new Exception("error registering the product: " . $e->getmessage());            
         }
     }
 }

@@ -68,10 +68,14 @@ class Furniture extends Product
             $stman->bindValue(':height', $product->getHeight());
             $stman->bindValue(':width', $product->getWidth());
             $stman->bindValue(':length', $product->getLength());
-            $stman->execute();            
+            $stman->execute();
+            $response = ['Product added on database'];
+            
+            return $response;
 
         } catch (Exception $e) {
-            throw new Exception("error registering the product: " . $e->getmessage());
+
+            throw new Exception("error registering the product: " . $e->getmessage());            
         }
     }
 }

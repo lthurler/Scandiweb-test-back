@@ -89,6 +89,7 @@ abstract class Product
             return $response;
 
         } catch (Exception $e) {
+
             throw new Exception("Error listing all users " . $e->getMessage());
         }
     }
@@ -101,13 +102,20 @@ abstract class Product
             $ids = implode(',', array_fill(0, count($body['product_id']), '?'));
             $sql = "UPDATE product SET active = false WHERE product_id IN ($ids)";
             $stman = $conn->prepare($sql);
-            $stman->execute($body['product_id']);            
+            $stman->execute($body['product_id']);
+            $response = ['Product Deleted'];
+
+            return $response;
 
         } catch (PDOException $pdoe) {
-            throw new Exception("Error executing command on database! " . $pdoe->getMessage());        
+            
+            throw new Exception("Error executing command on database! " . $pdoe->getMessage());         
+                   
 
         } catch (Exception $e) {
+
             throw new Exception("Error deleting products " . $e->getMessage());
+            
         }
     }
 }

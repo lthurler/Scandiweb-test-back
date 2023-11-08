@@ -14,7 +14,7 @@ class Json
         $data['type'] = 'error';
 
         if ((is_array($response) && count($response) > 0)) {
-            $data['type'] = 'sucess';
+            $data['type'] = 'success';
             $data['response'] = $response;
         }
 

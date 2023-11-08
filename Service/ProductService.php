@@ -44,7 +44,7 @@ class ProductService
             return $this->bodyRequest();
 
         } else {
-
+            
             throw new InvalidArgumentException('Route not allowed!');
         }
     }
@@ -82,11 +82,11 @@ class ProductService
 
     public function post($body)
     {
-        ProductFactory::productSave($body);        
+        return ProductFactory::productSave($body);        
     }
 
     private function patch($body)
     {
-        Product::delete($body);       
+        return Product::delete($body);       
     }
 }
