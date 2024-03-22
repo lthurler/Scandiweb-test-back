@@ -7,9 +7,9 @@ use PDOException;
 
 class DAO
 {
-    private $pdo;
+     private $pdo;
 
-    function connect()
+    public function connect()
     {
         try {
             $pdo = new PDO("mysql:host=" . $_ENV['HOST'] . ";dbname=" . $_ENV['DB'], $_ENV['USER'], $_ENV['PASS']);
@@ -22,4 +22,10 @@ class DAO
         }
         return $pdo;
     }
+
+    public function close() {
+        if ($this->pdo !== null) {
+          $this->pdo = null;
+        }
+      }
 }

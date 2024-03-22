@@ -2,13 +2,13 @@
 
 namespace Model;
 
-
 use Exception;
 use Service\DAO;
+use PDOException;
 use Model\Product;
 
 
-class DVD extends Product
+class Dvd extends Product
 {
     private $size;
 
@@ -31,26 +31,35 @@ class DVD extends Product
 
     public function post($product)
     {
+        $dao = new DAO;
+
         try {
-            $dao = new DAO;
-            $conn = $dao->connect();
-            $sql = "INSERT INTO product (sku, name, price, product_type, size)
-                    VALUES (:sku, :name, :price, :product_type, :size)";
+            parent::post($product);
+            
+            $conn = $dao->connect();           
+            $sql = "UPDATE product SET size = :size WHERE sku = :sku";
 
             $stman = $conn->prepare($sql);
-            $stman->bindValue(":sku", $product->getSku());
-            $stman->bindValue(":name", $product->getName());
-            $stman->bindValue(":price", $product->getPrice());
-            $stman->bindValue(":product_type", $product->getProductType());
-            $stman->bindValue(':size', $product->getSize());
+            $stman->bindValue(":sku", $this->getSku());            
+            $stman->bindValue(':size', $this->getsize());
             $stman->execute();
             $response = ['Product added on database'];
-            
-            return $response;
+
+            return $response;                       
+
+        } catch (PDOException $pdoe) {            
+            throw new Exception("Error executing command on database! " . $pdoe->getMessage());        
 
         } catch (Exception $e) {
+            throw new Exception("error registering the product: " . $e->getmessage());
 
-            throw new Exception("error registering the product: " . $e->getmessage());            
-        }
+        } finally {
+            $dao->close();
+        }        
+    }
+
+    protected function getAttributes()
+    {
+        return 'size';
     }
 }

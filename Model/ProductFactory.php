@@ -2,23 +2,23 @@
 
 namespace Model;
 
-use Model\DVD;
-use Model\Book;
-use Model\Furniture;
-
+use Exception;
+use ReflectionClass;
 
 class ProductFactory
 {
-    private static $productTypes = [
-        'dvd' => DVD::class,
-        'book' => Book::class,
-        'furniture' => Furniture::class,
-    ];
-
-    public static function productSave($body)
+    public function productSave($body)
     {
-        $className = self::$productTypes[$body['product_type']];
-        $product = new $className($body);
+        $productType = $body['product_type'];        
+        $className = 'Model\\' . ucfirst($productType);
+
+        if (!class_exists($className)) {
+            throw new Exception("Product type " . $productType . " not found.");
+        }
+
+        $reflectionClass = new ReflectionClass($className);
+        $product = $reflectionClass->newInstance($body);
+        
         return $product->post($product);
     }
 }

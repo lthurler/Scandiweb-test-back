@@ -8,7 +8,7 @@ use JsonException;
 
 class Json
 {
-    public static function processArrayToReturn($response)
+    public function processArrayToReturn($response)
     {
         $data = [];
         $data['type'] = 'error';
@@ -18,10 +18,10 @@ class Json
             $data['response'] = $response;
         }
 
-        self::jsonReturn($data);
+        self::jsonResponse($data);
     }
 
-    private static function jsonReturn($data)
+    private function jsonResponse($data)
     {
         header('Content-Type: application/json; charset=UTF-8');
         header('Cache-control: no-cache, no-store, must-revalidate');
@@ -31,7 +31,7 @@ class Json
         exit;
     }
 
-    public static function handleJsonRequestBody()
+    public function handleJsonRequestBody()
     {
         try {
             $postJson = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
@@ -42,6 +42,9 @@ class Json
 
         if (is_array($postJson) && count($postJson) > 0) {
             return $postJson;
+
+        } else  {
+            throw new InvalidArgumentException('Request Body cannot be empty!');
         }
     }
 }

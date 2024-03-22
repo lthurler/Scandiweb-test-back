@@ -6,7 +6,7 @@ ini_set("display_startup_errors", 1);
 
 define('DS', DIRECTORY_SEPARATOR);
 define('DIR_APP', __DIR__);
-define('DIR_PROJECT', 'scandweb-back');
+define('DIR_PROJECT', 'scandiweb-back');
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

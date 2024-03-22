@@ -38,13 +38,12 @@ class ProductService
         if (
             in_array($this->request['route'], ['product'], true) &&
             in_array($this->request['resource'], ['post', 'get', 'delete'], true) &&
-            in_array($this->request['method'], ['GET', 'POST', 'PATCH'], true)
+            in_array($this->request['method'], ['GET', 'POST', 'DELETE'], true)
         ) {
 
             return $this->bodyRequest();
 
-        } else {
-            
+        } else {            
             throw new InvalidArgumentException('Route not allowed!');
         }
     }
@@ -53,12 +52,13 @@ class ProductService
     {
         if ($this->request['method'] !== 'GET') {
 
-            $this->setDataRequest(Json::handleJsonRequestBody());
+            $json = new Json();
+            $this->setDataRequest($json->handleJsonRequestBody());
+
             return $this->bodyValidade($this->getDataRequest());            
 
         } else {
-
-            return Product::get();                         
+            return Product::get();                                     
         }
     }
 
@@ -75,18 +75,19 @@ class ProductService
             return $this->$method($body);
 
         } else {
-
             throw new InvalidArgumentException('Invalid data');
         }               
     }
 
-    public function post($body)
+    private function post($body)
     {
-        return ProductFactory::productSave($body);        
+        $factory = new ProductFactory();
+
+        return $factory->productSave($body);                
     }
 
-    private function patch($body)
+    private function delete($body)
     {
-        return Product::delete($body);       
+        return Product::delete($body);                                      
     }
 }

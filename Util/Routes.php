@@ -3,10 +3,10 @@
 namespace Util;
 
 
-abstract class Routes
+class Routes
 {
-    public static function getRoutes() {
-
+    public function getRoutes()
+     {
         $uri = str_replace( '/' . DIR_PROJECT, '', $_SERVER['REQUEST_URI']);
         $url = explode('/', trim($uri,'/'));
 
