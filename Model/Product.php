@@ -146,7 +146,7 @@ abstract class Product
             $className = pathinfo($file, PATHINFO_FILENAME);
             $classNamespace = 'Model\\' . $className;
             
-            if ($className !== 'Product' && is_subclass_of($classNamespace, 'Model\Product')) {
+            if ($className == is_subclass_of($classNamespace, 'Model\Product')) {
                 $subclasses[] = $classNamespace;
             }
         }
